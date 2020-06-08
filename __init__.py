@@ -15,4 +15,3 @@ def accept():
 action = QAction("Reset &Cards", mw)
 action.triggered.connect(accept)
 mw.form.menuTools.addAction(action)
-mw.addonManager.setConfigAction(__name__, ResetEase)
