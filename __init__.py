@@ -2,46 +2,17 @@ from aqt import mw
 from aqt.utils import showInfo, askUser
 from aqt.qt import *
 
-def ResetEase():
-    dialog = QDialog(mw)
-    dialog.setWindowFlags(Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
-    ease_label = QLabel("Enter Ease: ")
-    ease_spinbox = QSpinBox()
-    ease_spinbox.setRange(130, 500)
-    ease_spinbox.setValue(250)
-    ease_spinbox.setSuffix("%")
-    ease_spinbox.setSingleStep(10)
-    user_ease = ease_spinbox.value()
-    reset_button = QPushButton("&Reset")
-    reset_button.clicked.connect(lambda: accept(user_ease))
-    reset_button.clicked.connect(lambda: dialog.hide())
-    cancel_button = QPushButton("&Cancel")
-    cancel_button.clicked.connect(lambda: dialog.hide())
-    ease_line = QHBoxLayout()
-    ease_line.addWidget(ease_label)
-    ease_line.addWidget(ease_spinbox)
-    button_line = QHBoxLayout()
-    button_line.addWidget(reset_button)
-    button_line.addWidget(cancel_button)
-    layout = QVBoxLayout()
-    layout.addLayout(ease_line)
-    layout.addLayout(button_line)
-    dialog.setLayout(layout)
-    dialog.setWindowTitle("Reset Ease")
-    dialog.show()
-
-def accept(user_ease):
-    anki_ease = user_ease * 10
-    reset = askUser("<div style='font-size: 16px'> Reset all cards Ease to {}%?<br><font color=red>This action can't be undone.</font></div>".format(user_ease), defaultno=True, title="Reset Ease")
+def accept():
+    reset = askUser("<div style='font-size: 16px'> Reset all cards to new?<br><font color=red>This action can't be undone.</font></div>".format(user_ease), defaultno=True, title="Reset Cards")
     if reset:
         anki_ease = 0
         mw.col.db.execute("update cards set queue = ?", anki_ease)
-        showInfo("Ease has been reset to {}%.".format(user_ease), title="Reset Ease")
+        showInfo("Done".format(user_ease), title="Reset Cards")
     else:
         pass
 
 
-action = QAction("Reset &Ease", mw)
-action.triggered.connect(ResetEase)
+action = QAction("Reset &Cards", mw)
+action.triggered.connect(accept)
 mw.form.menuTools.addAction(action)
 mw.addonManager.setConfigAction(__name__, ResetEase)
